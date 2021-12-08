@@ -1,4 +1,4 @@
-cell = list(range(1, 9))
+cell = list(range(1, 10))
 board = [[cell, cell, cell, cell, cell, cell, cell, cell, cell],
          [cell, cell, cell, cell, cell, cell, cell, cell, cell],
          [cell, cell, cell, cell, cell, cell, cell, cell, cell],
@@ -9,6 +9,11 @@ board = [[cell, cell, cell, cell, cell, cell, cell, cell, cell],
          [cell, cell, cell, cell, cell, cell, cell, cell, cell],
          [cell, cell, cell, cell, cell, cell, cell, cell, cell]]
 
-def print-cell-line(cell, line):
-    for i in range(1, 3):
-        print(cell[i])
+def print_cell_line(cell, line):
+    for i in range(line, line+3):
+        if i in cell:
+            print(i, end=' ')
+        else:
+            print(' ', end=' ')
+
+        
