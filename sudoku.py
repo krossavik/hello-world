@@ -30,28 +30,48 @@ def init():
     return board
 
 def print_cell_line(cell, line):
-    for i in range(line*3+1, line*3+3+1):
+    for i in range(line * 3 + 1, line * 3 + 4):
         if i in cell:
             print(i, end='')
         else:
             print(' ', end='')
 
 def print_board_line(board, row, line):
-    print('|', end='')
+    print('||', end='')
     for i in range(0, 9):
         print_cell_line(board[row][i], line)
         print('|', end='')
+        if i % 3 == 2:
+            print('|', end='')
     print()
 
 def print_row(board, row):
-    for i in range(0,3):
+    for i in range(0, 3):
         print_board_line(board, row, i)
-    print("-------------------------------------")
+    print("-----------------------------------------")
 
 def print_board(board):
-    print("-------------------------------------")
+    print("-----------------------------------------")
     for i in range(0, 9):
         print_row(board, i)
+        if i % 3 == 2:
+            print("-----------------------------------------")
+
+def prune_row(board, row, col):
+    [val] = board[row][col]
+    l =  list(range(0, 9))
+    l.remove(col)
+    for i in l:
+        if board[row][i].count(val):
+            board[row][i].remove(val)
+
+def prune_col(board, row, col):
+    [val] = board[row][col]
+    l =  list(range(0, 9))
+    l.remove(row)
+    for i in l:
+        if board[i][col].count(val):
+            board[i][col].remove(val)
 
 def test():
     board = init()
@@ -76,6 +96,13 @@ def test():
     print_board_line(board, 0, 1)
     print("Row 3, Line 2:", end=' ')
     print_board_line(board, 3, 2)
+    board[3][3]=[5]
+    print_board(board)
+    prune_row(board, 3, 3)
+    print_board(board)
+    prune_col(board, 3, 3)
     print_board(board)
     return board
 
+if __name__ == "__main__":
+    test()
