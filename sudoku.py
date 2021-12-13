@@ -73,6 +73,19 @@ def prune_col(board, row, col):
         if board[i][col].count(val):
             board[i][col].remove(val)
 
+def prune_grid(board, row, col):
+    [val] = board[row][col]
+    for i in range(row//3*3, row//3*3+3):
+        for j in range(row//3*3, row//3*3+3):
+            if [row, col] != [i, j]:
+                if board[i][j].count(val):
+                    board[i][j].remove(val)
+
+def prune(board, row, col):
+    prune_row(board, row, col)
+    prune_col(board, row, col)
+    prune_grid(board, row, col)
+
 def test():
     board = init()
     board[0][0].remove(1)
