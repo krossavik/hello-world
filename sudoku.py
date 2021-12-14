@@ -65,6 +65,8 @@ def prune_row(board, row, col):
     for i in l:
         if board[row][i].count(val):
             board[row][i].remove(val)
+            if len(board[row][i])<1:
+                print("Removed last:", row, i, val)
             changed = True
     return changed
 
@@ -76,6 +78,8 @@ def prune_col(board, row, col):
     for i in l:
         if board[i][col].count(val):
             board[i][col].remove(val)
+            if len(board[i][col])<1:
+                print("Removed last:", i, col, val)
             changed = True
     return changed
 
@@ -87,6 +91,8 @@ def prune_grid(board, row, col):
             if [row, col] != [i, j]:
                 if board[i][j].count(val):
                     board[i][j].remove(val)
+                    if len(board[i][j])<1:
+                        print("Removed last:", i, j, val)
                     changed = True
     return changed
 
@@ -189,6 +195,21 @@ def unique_in_any_grid(board):
         for gridy in [0, 3, 6]:
             changed = unique_in_grid(board, gridx, gridy) or changed
     return changed
+
+def unique (board):
+    changed = unique_in_any_row(board)
+    changed = unique_in_any_col(board) or changed
+    changed = unique_in_any_grid(board) or changed
+    return changed
+
+def solve (board):
+    changed = True
+    while (changed):
+        changed = prune_all(board)
+    changed = True
+    while (changed):
+        changed = unique(board)
+        changed = prune_all(board) or changed
                 
 def test():
     board = init()
