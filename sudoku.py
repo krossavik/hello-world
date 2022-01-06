@@ -202,30 +202,106 @@ def unique (board):
     changed = unique_in_any_grid(board) or changed
     return changed
 
+def count_val_in_gridrow(board, gridrowx, gridrowy, val):
+    count = 0
+    for y in range(gridrowy, gridrowy + 3):
+        if val in board[gridrowx][y]:
+            count = count + 1
+    return count
+
+def unique_in_gridrow(board,  gridrowx, gridrowy, val):
+    other_rows = list(range(gridrowx//3*3, gridrowx//3*3+3))
+    other_rows.remove(gridrowx)
+    if ((count_val_in_gridrow(board, other_rows[0], gridrowy, val) > 0)
+        or (count_val_in_gridrow(board, other_rows[1], gridrowy, val) > 0)):
+        return False
+    return True
+
+def remove_in_other_gridrows(board,  gridrowx, gridrowy, val):
+    changed = False
+    other_cols = [0, 3, 6]
+    other_cols.remove(gridrowy)
+    for y0 in other_cols:
+        for y in range(y0, y0+3):
+            if val in board[gridrowx][y]:
+                board[gridrowx][y].remove(val)
+                print(gridrowx, y, val)
+                changed = True
+    return changed
+
+def count_val_in_gridcol(board, gridcolx, gridcoly, val):
+    count = 0
+    for x in range(gridcolx, gridcolx + 3):
+        if val in board[x][gridcoly]:
+            count = count + 1
+    print ("count:", gridcolx, gridcoly, val, count)
+    return count
+
+def unique_in_gridcol(board,  gridcolx, gridcoly, val):
+    other_cols = list(range(gridcoly//3*3, gridcoly//3*3+3))
+    other_cols.remove(gridcoly)
+    if ((count_val_in_gridcol(board, gridcolx, other_cols[0], val) > 0)
+        or (count_val_in_gridcol(board, gridcolx, other_cols[1], val) > 0)):
+        return False
+    return True
+
+def remove_in_other_gridcols(board,  gridcolx, gridcoly, val):
+    changed = False
+    other_rows = [0, 3, 6]
+    other_rows.remove(gridcolx)
+    for x0 in other_rows:
+        for x in range(x0, x0+3):
+            if val in board[x][gridcoly]:
+                board[x][gridcoly].remove(val)
+                print(x, gridcoly, val)
+                changed = True
+    return changed
+
+def check_and_remove_in_grids(board):
+    changed = False
+    for val in range(1,10):
+        for i in range(0, 9):
+            for j in [0, 3, 6]:
+                if count_val_in_gridrow(board, i, j, val) > 1:
+                    if unique_in_gridrow(board, i, j, val):
+                        remove_in_other_gridrows(board, i, j, val)
+                        changed = True
+                if count_val_in_gridcol(board, j, i, val) > 1:
+                    if unique_in_gridcol(board, j, i, val):
+                        print("unique", j, i, val)
+                        remove_in_other_gridcols(board, j, i, val)
+                        changed = True
+    return changed
+
+def solved (board):
+    for i in range(0, 9):
+        for j in range(0, 9):
+            if len(board[i][j]) > 1:
+                return False
+    return True
+
 def solve (board):
     changed = True
     while (changed):
         changed = prune_all(board)
+    if solved(board):
+        return
     changed = True
     while (changed):
         changed = unique(board)
         changed = prune_all(board) or changed
-                
+    if solved(board):
+        return
+    check_and_remove_in_grids(board)
+    changed = True
+    while (changed):
+        changed = unique(board)
+        changed = prune_all(board)
+    
 def test():
     board = init()
-    set_board(board, [[0,3,0,2,0,0,0,0,0],[0,6,0,3,0,0,0,0,4],
-                      [7,0,5,0,0,9,0,0,0],[4,0,3,0,0,7,6,0,0],
-                      [9,0,0,5,0,4,0,0,1],[0,0,2,6,0,0,9,0,7],
-                      [0,0,0,7,0,0,4,0,8],[8,0,0,0,0,1,0,7,0],
-                      [0,0,0,0,0,3,0,2,0]])
-    prune_all(board)
-    prune_all(board)
-    prune_all(board)
-    prune_all(board)
-    prune_all(board)
-    unique_in_any_row(board)
-    unique_in_row(board,0)
-    print_board(board)
+    set_board(board, [[6,0,0,0,0,0,0,0,9],[0,0,4,0,5,0,0,0,0],[0,9,0,0,0,0,1,0,5],[0,0,0,0,9,0,0,0,8],[0,5,0,3,0,0,2,4,0],[0,0,0,0,0,6,3,9,0],[0,0,7,0,3,4,0,0,0],[0,0,0,0,6,8,0,3,0],[1,0,8,2,0,0,0,0,0]])
+    solve(board)
     return board
 
 if __name__ == "__main__":
