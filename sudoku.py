@@ -53,7 +53,7 @@
 # Each cell in the sudoku board is represented as a list of integers. 
 # Initially all cells contain all values 1..9 (list(range(1, 10))). As 
 # the board is getting solved,
-# each cell eventually end up with only one value, and hence become a 
+# each cell eventually end up with only one value, and hence becomes a 
 # single-value list.
 # Each row is a list of nine cells. The board is a list of nine rows, 
 # hence forming a 9x9 matrix.
@@ -92,6 +92,16 @@ def init():
               list(range(1, 10)), list(range(1, 10)), list(range(1, 10))]
              ]
     return board
+
+# Function: solved
+# Check if the board is solved by checking if every cell has only
+# one value (length == 1)
+def solved (board):
+    for i in range(0, 9):
+        for j in range(0, 9):
+            if len(board[i][j]) > 1:
+                return False
+    return True
 
 # Function: print_cell_line
 # Each cell can contain from one to nine values, and should be displayed
@@ -180,16 +190,6 @@ def print_board(board):
         print_row(board, i)
     print("=========================================")
 
-# Function: solved
-# Check if the board is solved by checking if every cell has only
-# one value (length == 1)
-def solved (board):
-    for i in range(0, 9):
-        for j in range(0, 9):
-            if len(board[i][j]) > 1:
-                return False
-    return True
-
 # Algorithm #1: Pruning candidates from cells when a related cell has
 # been solved. E.g. if cell board[0][0] (top left corner) is set to 5
 # then row 0 can not contain a 5 in any other cell, nor can column 0,
@@ -269,30 +269,6 @@ def prune_all(board):
     return changed
 
 # End Algorithm #1, Pruning
-
-# Function: set_prune
-# Set the value at board[row][col] to val and prune the row, column and grid
-def set_prune(board, row, col, val):
-    board[row][col] = [val]
-    prune(board, row, col)
-
-# Function: set_board
-# Given a 9x9 matrix, set the board to the corresponding values. '0'
-# represents an empty cell, e.g.
-# [[0,0,2,9,0,0,8,7,0],
-#  [8,0,7,0,0,0,9,0,0],
-#  [0,0,0,8,0,4,6,0,3],
-#  [0,0,0,1,0,0,0,6,0],
-#  [0,0,0,2,0,5,0,0,0],
-#  [0,8,0,0,0,9,0,0,0],
-#  [6,0,3,4,0,8,0,0,0],
-#  [0,0,8,0,0,0,7,0,4],
-#  [0,2,9,0,0,7,1,0,0]]
-def set_board(board, values):
-    for i in range(0, 9):
-        for j in range(0, 9):
-            if values[i][j] != 0:
-                set_prune(board, i, j, values[i][j])
 
 # Algorithm #2: Checking if a candidate value only appears once in
 # rows, cells or grids, and setting the value accordingly
@@ -479,7 +455,31 @@ def check_and_remove_in_grids(board):
                         changed = True
     return changed
 
-# End of Algorith #3
+# End of Algorithm #3
+
+# Function: set_prune
+# Set the value at board[row][col] to val and prune the row, column and grid
+def set_prune(board, row, col, val):
+    board[row][col] = [val]
+    prune(board, row, col)
+
+# Function: set_board
+# Given a 9x9 matrix, set the board to the corresponding values. '0'
+# represents an empty cell, e.g.
+# [[0,0,2,9,0,0,8,7,0],
+#  [8,0,7,0,0,0,9,0,0],
+#  [0,0,0,8,0,4,6,0,3],
+#  [0,0,0,1,0,0,0,6,0],
+#  [0,0,0,2,0,5,0,0,0],
+#  [0,8,0,0,0,9,0,0,0],
+#  [6,0,3,4,0,8,0,0,0],
+#  [0,0,8,0,0,0,7,0,4],
+#  [0,2,9,0,0,7,1,0,0]]
+def set_board(board, values):
+    for i in range(0, 9):
+        for j in range(0, 9):
+            if values[i][j] != 0:
+                set_prune(board, i, j, values[i][j])
 
 # Function: solve
 def solve (board):
